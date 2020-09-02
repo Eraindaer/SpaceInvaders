@@ -6,7 +6,7 @@ Enemy::Enemy() {
 }
 Enemy::~Enemy() {
 	dest.h = dest.w = 0;
-	dest.x = Window::rightBorder / 2;
+	dest.x = 300;
 	dest.y = -100;
 }
 void Enemy::Init(int x, int y, int w, int h) {
@@ -30,10 +30,10 @@ Projectile* Enemy::Fire() {
 	return missil;
 }
 
-void Enemy::Draw(int x, int y, int w, int h) {
+void Enemy::Draw(int x, int y, int w, int h, Window* window) {
 	src.x = x;
 	src.y = y;
 	src.w = w;
 	src.h = h;
-	TextureManager::DrawTexture(Window::windowRenderer, src, dest);
+	window->textureManager->DrawTexture(window->windowRenderer, src, dest);
 }

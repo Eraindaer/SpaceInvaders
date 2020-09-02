@@ -6,15 +6,15 @@ public:
 	Player();
 	~Player();
 
-	int MoveX();
+	int MoveX(Window* window);
 	int GetSpeed() { return speed; }
-	void Update() override;
-	void Fire();
+	void Update(Window* window);
+	void Fire(Window* window);
 	void Init(int x, int y, int w, int h) override;
 	int GetHP() { return HP; }
-	void Draw();
+	void Draw(Window* window);
 	void Damaged();
-	void HealthBar();
+	void HealthBar(Window* window);
 
 	SDL_Rect src, src2, dest;
 	SDL_Rect HPsrc, HPdest;
@@ -25,4 +25,5 @@ public:
 private:
 	int speed = 7;
 	int HP = 3;
+	int output;
 };

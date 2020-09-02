@@ -11,7 +11,7 @@ public:
 	~GameObject();
 
 	virtual void Init(int x, int y, int w, int h);
-	virtual void Draw();
+	virtual void Draw(Window* window, TextureManager* textureManager);
 	virtual void Update();
 	int X() { return xpos; }
 	int Y() { return ypos; }

@@ -1,7 +1,4 @@
 #include "GameObject.h"
-int Window::bottomBorder;
-int Window::topBorder;
-
 GameObject::GameObject() {
 	Window::Window();
 	xpos = ypos = 0;
@@ -19,8 +16,8 @@ void GameObject::Init(int x, int y, int h, int w) {
 void GameObject::Update() {
 }
 
-void GameObject::Draw(){
-	TextureManager::DrawTexture(Window::windowRenderer, src, dest);
+void GameObject::Draw(Window* window, TextureManager* textureManager){
+	textureManager->DrawTexture(window->windowRenderer, src, dest);
 }
 
 

@@ -7,8 +7,8 @@ public:
 	~Projectile();
 
 	void Init(int x, int y, int w, int h);
-	void Update(int direction);
-	void Draw(SDL_Rect src);
+	void Update(int direction, Window* window);
+	void Draw(SDL_Rect src, Window* window);
 
 	SDL_Rect dest;
 	bool fire;

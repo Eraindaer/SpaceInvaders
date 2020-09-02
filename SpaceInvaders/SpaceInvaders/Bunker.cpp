@@ -5,7 +5,7 @@ Bunker::Bunker() {
 }
 Bunker::~Bunker(){
 	dest.h = dest.w = 0;
-	dest.x = Window::rightBorder / 2;
+	dest.x = 300;
 	dest.y = -100;
 }
 
@@ -21,6 +21,6 @@ void Bunker::Init(int x, int y, int w, int h){
 	dest.h = h;
 }
 
-void Bunker::Draw() {
-	TextureManager::DrawTexture(Window::windowRenderer, src, dest);
+void Bunker::Draw(Window* window) {
+	window->textureManager->DrawTexture(window->windowRenderer, src, dest);
 }

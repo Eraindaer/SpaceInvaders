@@ -1,10 +1,5 @@
 #include "Player.h"
 
-SDL_Event Window::event;
-int Window::leftBorder, Window::rightBorder;
-SDL_Texture* TextureManager::tex;
-
-
 Player::Player() {
 	Character();
 	
@@ -33,25 +28,24 @@ void Player::Init(int x, int y, int w, int h) {
 	hit = false;
 }
 
-int Player::MoveX() {
-	int output = 0;
-	if (Window::event.type == SDL_KEYDOWN) {
-		switch (Window::event.key.keysym.sym)
+int Player::MoveX(Window* window) {
+	if (window->event.type == SDL_KEYDOWN) {
+		switch (window->event.key.keysym.sym)
 		{
 		case SDLK_LEFT:
-			if(dest.x > Window::leftBorder + 10)
+			if(dest.x > window->leftBorder + 10)
 				output = -1;
 			break;
 		case SDLK_RIGHT:
-			if(dest.x + dest.w < Window::rightBorder - 10)
+			if(dest.x + dest.w < window->rightBorder - 10)
 				output = 1;
 			break;
 		default:
 			break;
 		}
 	}
-	else if (Window::event.type == SDL_KEYUP) {
-		switch (Window::event.key.keysym.sym)
+	else if (window->event.type == SDL_KEYUP) {
+		switch (window->event.key.keysym.sym)
 		{
 		case SDLK_LEFT:
 		case SDLK_RIGHT:
@@ -64,12 +58,12 @@ int Player::MoveX() {
 	return output;
 }
 
-void Player::Update() {
-	dest.x += Player::MoveX() * speed;
+void Player::Update(Window* window) {
+	dest.x += Player::MoveX(window) * speed;
 }
-void Player::Fire() {
-	if (Window::event.type == SDL_KEYDOWN) {
-		switch (Window::event.key.keysym.sym)
+void Player::Fire(Window* window) {
+	if (window->event.type == SDL_KEYDOWN) {
+		switch (window->event.key.keysym.sym)
 		{
 		case SDLK_SPACE:
 		case SDLK_UP:
@@ -87,20 +81,20 @@ void Player::Damaged() {
 	HP--;
 	hit = true;
 }
-void Player::HealthBar() {
+void Player::HealthBar(Window* window) {
 	for (int i = 0; i < HP; i++) {
 		HPdest.x = 10 + i * 55;
 		HPdest.y = 600;
 		HPdest.w = 51;
 		HPdest.h = 32;
-		TextureManager::DrawTexture(Window::windowRenderer, HPsrc, HPdest);
+		window->textureManager->DrawTexture(window->windowRenderer, HPsrc, HPdest);
 	}
 }
 
-void Player::Draw() {
+void Player::Draw(Window* window) {
 	if (hit) {
-		TextureManager::DrawTexture(Window::windowRenderer, src2, dest);
+		window->textureManager->DrawTexture(window->windowRenderer, src2, dest);
 	}
 	else
-		TextureManager::DrawTexture(Window::windowRenderer, src, dest);
+		window->textureManager->DrawTexture(window->windowRenderer, src, dest);
 }

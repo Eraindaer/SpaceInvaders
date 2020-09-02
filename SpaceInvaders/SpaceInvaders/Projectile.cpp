@@ -15,12 +15,12 @@ void Projectile::Init(int x, int y, int w, int h) {
 	dest.h = h;
 	fire = true;
 }
-void Projectile::Update(int direction) {
+void Projectile::Update(int direction, Window* window) {
 	dest.y += direction * 7;
-	if (dest.y < Window::topBorder)
+	if (dest.y < window->topBorder)
 		Projectile::~Projectile();
 }
 
-void Projectile::Draw(SDL_Rect src) {
-	TextureManager::DrawTexture(Window::windowRenderer, src, dest);
+void Projectile::Draw(SDL_Rect src, Window* window) {
+	window->textureManager->DrawTexture(window->windowRenderer, src, dest);
 }

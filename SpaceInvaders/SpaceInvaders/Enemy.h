@@ -10,7 +10,7 @@ public :
 	void MoveX();
 	void MoveY();
 	Projectile* Fire();
-	void Draw(int x, int y, int w, int h);
+	void Draw(int x, int y, int w, int h, Window* window);
 	SDL_Rect src, dest;
 	SDL_Rect groupRect;
 	int direction = 1;

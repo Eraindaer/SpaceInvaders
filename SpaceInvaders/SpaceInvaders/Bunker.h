@@ -7,7 +7,7 @@ public:
 	~Bunker();
 
 	void Init(int x, int y, int w, int h) override;
-	void Draw();
+	void Draw(Window* window);
 	SDL_Rect src, dest;
 
 private:

@@ -1,123 +1,104 @@
 #include "Game.h"
 
-bool Window::isRunning;
-SDL_Renderer* Window::windowRenderer;
-SDL_Window* Window::window;
-
-SDL_Rect EnemyManager::enemyGroupRect, EnemyManager::missilSrc;
-bool EnemyManager::movedToY;
-std::vector<std::vector<Enemy*>> EnemyManager::enemyGroup;
-
-std::map<int, std::vector<std::vector<Bunker*>>> BunkerManager::bunkerList;
-
-std::vector<Projectile*> EnemyManager::missilList;
-
-int enemyMap[5][11] =
-{ {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-  {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-  {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-  {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-  {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1} };
-
-int bunkerMap[8][12] =
-{ {0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0},
-  {0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0},
-  {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
-  {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-  {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-  {1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1},
-  {1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1},
-  {1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1}};
-
 
 Game::Game() {
+	window = new Window();
 	player = new Player();
-	EnemyManager::EnemyVectorGenerator(enemyMap);
-	for(int i = 0; i < 4; i++)
-		BunkerManager::BunkerVectorGenerator(bunkerMap, i);
+	enemyManager = new EnemyManager();
+	bunkerManager = new BunkerManager();
+	for (int i = 0; i < 4; i++)
+		bunkerManager->Generator(i);
 }
 
 Game::~Game() {
-
+	delete(window);
+	delete(player);
+	delete(enemyManager);
+	delete(bunkerManager);
 }
 
-///Initialisation du jeu
+///Initialisation du jeu, des différentes entités, préchargement des textures
 
 void Game::Init() {
-	Window::Init("Space Invaders", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 640);
+	window->Init("Space Invaders", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 640);
 	player->Init(15, 540, 45, 28);
-	EnemyManager::Initialisation();
-	TextureManager::InitTexture("assets/spaceI.png", Window::windowRenderer);
+	enemyManager->Initialisation();
 	finish = false;
 	for (int i = 0; i < 4; i++)
-		BunkerManager::Initialisation(i);
+		bunkerManager->Initialisation(i);
 }
+
+///Gestion des évènements (quitter la fenêtre et tirer pour le moment)
 
 void Game::HandleEvents() {
 	frameStart = SDL_GetTicks();
-	Window::FrameEvents();
-	player->Fire();
+	window->FrameEvents();
+	player->Fire(window);
 }
 
 ///Initialisation des déplacements
 
 void Game::Update() {
-	player->Update();
+	player->Update(window);
 	if  (player->bullet != nullptr && player->bullet->fire) {
-		player->bullet->Update(-1);
+		player->bullet->Update(-1, window);
 	}
-	EnemyManager::EnemyMissils();
-	for (int i = 0; i < EnemyManager::missilList.size(); i++) {
-		if (EnemyManager::missilList[i] != nullptr)
-			EnemyManager::missilList[i]->Update(1);
+	enemyManager->EnemyMissils();
+	for (int i = 0; i < enemyManager->missilList.size(); i++) {
+		if (enemyManager->missilList[i] != nullptr)
+			enemyManager->missilList[i]->Update(1, window);
 	}
 	if (player->bullet != nullptr) {
 		for (int i = 0; i < 4; i++)
-			BunkerManager::Collision(i, player->bullet);
-		EnemyManager::Collision(player->bullet);
+			bunkerManager->Collision(i, player->bullet);
+		enemyManager->Collision(player->bullet);
 	}
-	EnemyManager::MissilHitPlayer(player);
-	EnemyManager::MissilDisappear();
+	enemyManager->MissilHitPlayer(player);
+	enemyManager->MissilDisappear(window);
 	for (int i = 0; i < 4; i++) {
-		BunkerManager::MissilCollision(i);
+		bunkerManager->MissilCollision(i, enemyManager);
 	}
-	if (frame % (EnemyManager::EnemyCounter()+5) == 0) {
-		EnemyManager::EnemyMovement();
+	if (frame % (enemyManager->EnemyCounter()+5) == 0) {
+		enemyManager->EnemyMovement(window);
 		enemyMovement = (enemyMovement == 0) ? 1 : 0;
 	}
-	if (EnemyManager::EnemyCounter() == 0) {
+	if (enemyManager->EnemyCounter() == 0) {
 		finish = true;
-		EnemyManager::Clear();
+		enemyManager->Clear();
 	}
 	
-	if (EnemyManager::GameLost(player))
-		Window::isRunning = false;
+	if (enemyManager->GameLost(player))
+		window->isRunning = false;
 	frame++;
 }
 
 ///Gestion des textures
 
 void Game::Render() {
-	SDL_RenderClear(Window::windowRenderer);
+	SDL_RenderClear(window->windowRenderer);
 	if (player->bullet != nullptr && player->bullet->fire) {
-		player->bullet->Draw(player->bulletSrc);
+		player->bullet->Draw(player->bulletSrc, window);
 	}
-	player->Draw();
-	EnemyManager::Draw(enemyMovement);
+	player->Draw(window);
+	enemyManager->Draw(enemyMovement, window);
 	for (int i = 0; i < 4; i++)
-		BunkerManager::Draw(i);
-	for (int j = 0; j < EnemyManager::missilList.size(); j++) {
-		EnemyManager::missilList[j]->Draw(EnemyManager::missilSrc);
+		bunkerManager->Draw(i, window);
+	for (int j = 0; j < enemyManager->missilList.size(); j++) {
+		enemyManager->missilList[j]->Draw(enemyManager->missilSrc, window);
 	}
-	player->HealthBar();
-	SDL_RenderPresent(Window::windowRenderer);
-
+	player->HealthBar(window);
+	SDL_RenderPresent(window->windowRenderer);
 }
+
+///Fermeture de la fenêtre
+
 void Game::Clear() {
-	SDL_DestroyRenderer(Window::windowRenderer);
-	SDL_DestroyWindow(Window::window);
+	SDL_DestroyRenderer(window->windowRenderer);
+	SDL_DestroyWindow(window->window);
 	SDL_Quit();
 }
+
+///Gestion des délais
 
 void Game::Delay() {
 	if (player->hit) {
@@ -129,9 +110,11 @@ void Game::Delay() {
 		SDL_Delay(frameDelay - frameTime);
 }
 
+///Regénération du niveau
+
 void Game::Restart() {
 	SDL_Delay(1000);
-	EnemyManager::EnemyVectorGenerator(enemyMap);
-	EnemyManager::Initialisation();
+	enemyManager = new EnemyManager();
+	enemyManager->Initialisation();
 	finish = false;
 }

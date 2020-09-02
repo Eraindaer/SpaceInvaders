@@ -14,11 +14,14 @@ public:
 	void Clear();
 	void Delay();
 	void Restart();
-	bool isRunning(){ return Window::isRunning; }
+	bool isRunning() { return window->isRunning; }
 	bool isFinished() { return finish; }
 
 private:
 
+	EnemyManager* enemyManager;
+	BunkerManager* bunkerManager;
+	Window* window;
 	bool finish;
 	const int FPS = 60;
 	const int frameDelay = 1000 / FPS;
