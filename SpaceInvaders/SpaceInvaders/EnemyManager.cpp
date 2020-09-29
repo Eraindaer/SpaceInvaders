@@ -95,7 +95,7 @@ void EnemyManager::EnemyMovement(Window* window) {
 		}
 	}
 
-	if ((movedToY) || (enemyGroupRect.x > window->leftBorder + 10 && enemyGroupRect.x + enemyGroupRect.w < window->rightBorder - 10)) {
+	if ((movedToY) || (NoBorderCollision(enemyGroupRect, window))) {
 		for (int k = 0; k < enemyGroup.size(); k++) {
 			for (int h = 0; h < enemyGroup[k].size(); h++) {
 				if (enemyGroup[k][h] != nullptr) {
@@ -149,6 +149,7 @@ void EnemyManager::Draw(int frame, Window* window) {
 			if (enemyGroup[i][j] != nullptr)
 				if (enemyGroup[i][j]->hit) {
 					enemyGroup[i][j]->Draw(310, 49, 69, 44, window);
+					window->scoreManager->AddScore((5 - i) * 10);
 					delete(enemyGroup[i][j]);
 					enemyGroup[i][j] = nullptr;
 				}

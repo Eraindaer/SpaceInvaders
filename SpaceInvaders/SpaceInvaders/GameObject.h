@@ -1,6 +1,7 @@
 #pragma once
 #include "TextureManager.h"
 #include "WindowManager.h"
+#include "CollisionManager.h"
 #include <vector>
 #include <stdlib.h>
 

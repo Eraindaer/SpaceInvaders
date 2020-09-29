@@ -29,7 +29,22 @@ void Player::Init(int x, int y, int w, int h) {
 }
 
 int Player::MoveX(Window* window) {
-	if (window->event.type == SDL_KEYDOWN) {
+
+	if (NoBorderCollision(dest, window)) {
+		if (KeyIsDown(SDLK_LEFT, window))
+			output = -1;
+		else if (KeyIsUp(SDLK_LEFT, window))
+			output = 0;
+
+		if (KeyIsDown(SDLK_RIGHT, window))
+			output = 1;
+		else if (KeyIsUp(SDLK_RIGHT, window))
+			output = 0;
+	}
+	else
+		output *= -1;
+
+	/*if (window->event.type == SDL_KEYDOWN) {
 		switch (window->event.key.keysym.sym)
 		{
 		case SDLK_LEFT:
@@ -54,7 +69,7 @@ int Player::MoveX(Window* window) {
 		default:
 			break;
 		}
-	}
+	}*/
 	return output;
 }
 
@@ -62,7 +77,15 @@ void Player::Update(Window* window) {
 	dest.x += Player::MoveX(window) * speed;
 }
 void Player::Fire(Window* window) {
-	if (window->event.type == SDL_KEYDOWN) {
+	
+	if (KeyIsDown(SDLK_UP, window) || KeyIsDown(SDLK_SPACE, window)) {
+		if (bullet == nullptr || !bullet->fire) {
+			bullet = new Projectile();
+			bullet->Init(dest.x + 18, dest.y, 8, 24);
+		}
+	}
+	
+	/*if (window->event.type == SDL_KEYDOWN) {
 		switch (window->event.key.keysym.sym)
 		{
 		case SDLK_SPACE:
@@ -75,7 +98,7 @@ void Player::Fire(Window* window) {
 		default:
 			break;
 		}
-	}
+	}*/
 }
 void Player::Damaged() {
 	HP--;
@@ -83,11 +106,17 @@ void Player::Damaged() {
 }
 void Player::HealthBar(Window* window) {
 	for (int i = 0; i < HP; i++) {
-		HPdest.x = 10 + i * 55;
+		HPdest.x = 90 + i * 55;
 		HPdest.y = 600;
 		HPdest.w = 51;
 		HPdest.h = 32;
 		window->textureManager->DrawTexture(window->windowRenderer, HPsrc, HPdest);
+		textDest.x = 10, textDest.y = 610;
+		window->textureManager->DrawCharacters("Lives", window->windowRenderer, textDest);
+	}
+	if (HP == 0) {
+		window->textureManager->DrawCharacters("Game Over", window->windowRenderer, { 325, 300, 0, 0 });
+		SDL_Delay(1000);
 	}
 }
 

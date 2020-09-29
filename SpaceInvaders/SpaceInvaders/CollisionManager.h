@@ -9,3 +9,10 @@ template <typename T, typename Q> bool CollisionAABB (T a, Q b) {
 	}
 	return false;
 }
+
+template <typename T, typename U>
+bool NoBorderCollision(T a, U b) {
+	if (a.x > b->leftBorder + 10 && a.x + a.w < b->rightBorder - 10)
+		return true;
+	return false;
+}

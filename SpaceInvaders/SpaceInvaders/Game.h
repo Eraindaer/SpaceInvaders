@@ -2,32 +2,28 @@
 #include "Player.h"
 #include "EnemyManager.h"
 #include "BunkerManager.h"
-class Game {
+#include "Scene.h"
+class Game : public Scene{
 public:
 	Game();
 	~Game();
 
-	void Init();
-	void Update();
-	void HandleEvents();
-	void Render();
-	void Clear();
-	void Delay();
+	void Init(Window* window) override;
+	void Update(Window* window) override;
+	void HandleEvents(Window* window) override;
+	void Render(Window* window) override;
 	void Restart();
-	bool isRunning() { return window->isRunning; }
+	bool isRunning(Window* window) { return window->isRunning; }
 	bool isFinished() { return finish; }
 
 private:
 
+	SDL_Rect scoreDest;
 	EnemyManager* enemyManager;
 	BunkerManager* bunkerManager;
-	Window* window;
 	bool finish;
-	const int FPS = 60;
-	const int frameDelay = 1000 / FPS;
-	Uint32 frameStart;
-	int frameTime; 
 	Player* player;
+	int currentScore;
 	int frame = 0;
 	int enemyMovement = 0;
 

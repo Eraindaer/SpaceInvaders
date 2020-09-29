@@ -2,16 +2,15 @@
 
 
 Game::Game() {
-	window = new Window();
 	player = new Player();
 	enemyManager = new EnemyManager();
 	bunkerManager = new BunkerManager();
 	for (int i = 0; i < 4; i++)
 		bunkerManager->Generator(i);
+
 }
 
 Game::~Game() {
-	delete(window);
 	delete(player);
 	delete(enemyManager);
 	delete(bunkerManager);
@@ -19,9 +18,11 @@ Game::~Game() {
 
 ///Initialisation du jeu, des différentes entités, préchargement des textures
 
-void Game::Init() {
-	window->Init("Space Invaders", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 640);
-	player->Init(15, 540, 45, 28);
+void Game::Init(Window* window) {
+	window->isRunning = true;
+	window->scoreManager->SetScore(0);
+	scoreDest.x = 650, scoreDest.y = 605;
+	player->Init(370, 540, 45, 28);
 	enemyManager->Initialisation();
 	finish = false;
 	for (int i = 0; i < 4; i++)
@@ -30,16 +31,21 @@ void Game::Init() {
 
 ///Gestion des évènements (quitter la fenêtre et tirer pour le moment)
 
-void Game::HandleEvents() {
-	frameStart = SDL_GetTicks();
-	window->FrameEvents();
+void Game::HandleEvents(Window* window) {
+	Scene::HandleEvents(window);
 	player->Fire(window);
 }
 
 ///Initialisation des déplacements
 
-void Game::Update() {
+void Game::Update(Window* window) {
+	if (enemyManager->GameLost(player))
+		window->isRunning = false;
 	player->Update(window);
+	if (player->hit) {
+		player->hit = false;
+		SDL_Delay(1000);
+	}
 	if  (player->bullet != nullptr && player->bullet->fire) {
 		player->bullet->Update(-1, window);
 	}
@@ -63,18 +69,15 @@ void Game::Update() {
 		enemyMovement = (enemyMovement == 0) ? 1 : 0;
 	}
 	if (enemyManager->EnemyCounter() == 0) {
-		finish = true;
 		enemyManager->Clear();
+		Game::Restart();
 	}
-	
-	if (enemyManager->GameLost(player))
-		window->isRunning = false;
 	frame++;
 }
 
 ///Gestion des textures
 
-void Game::Render() {
+void Game::Render(Window* window) {
 	SDL_RenderClear(window->windowRenderer);
 	if (player->bullet != nullptr && player->bullet->fire) {
 		player->bullet->Draw(player->bulletSrc, window);
@@ -87,27 +90,10 @@ void Game::Render() {
 		enemyManager->missilList[j]->Draw(enemyManager->missilSrc, window);
 	}
 	player->HealthBar(window);
+	window->textureManager->DrawCharacters(("SCORE  " + std::to_string(window->scoreManager->GetScore())).c_str(), window->windowRenderer, scoreDest);
+
 	SDL_RenderPresent(window->windowRenderer);
-}
-
-///Fermeture de la fenêtre
-
-void Game::Clear() {
-	SDL_DestroyRenderer(window->windowRenderer);
-	SDL_DestroyWindow(window->window);
-	SDL_Quit();
-}
-
-///Gestion des délais
-
-void Game::Delay() {
-	if (player->hit) {
-		player->hit = false;
-		SDL_Delay(1000);
-	}
-	frameTime = SDL_GetTicks() - frameStart;
-	if (frameDelay > frameTime)
-		SDL_Delay(frameDelay - frameTime);
+	
 }
 
 ///Regénération du niveau
@@ -116,5 +102,4 @@ void Game::Restart() {
 	SDL_Delay(1000);
 	enemyManager = new EnemyManager();
 	enemyManager->Initialisation();
-	finish = false;
 }

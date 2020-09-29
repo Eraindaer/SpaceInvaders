@@ -1,19 +1,31 @@
-#include "Game.h"
+#include "SceneManager.h"
+Window* window = new Window();
+Scene* array[] = { new Game(), new HighScoreScene() };
+Scene* currentScene = new Menu();
 
-Game* game = new Game();
-
-int main(int argc, char* argv[]) {
-
-	game->Init();	
-
-	while (game->isRunning()) {
-		game->HandleEvents();
-		game->Update();
-		game->Render();
-		game->Delay();
-		if (game->isFinished())
-			game->Restart();
+int main(int argc, char* argv[]) { 
+	window->Init("Space Invaders", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 640);
+	int i = 0;
+	while (!window->finish) {
+		if (currentScene != NULL) {
+			currentScene->Init(window);
+			while (currentScene->isRunning(window)) {
+				currentScene->HandleEvents(window);
+				currentScene->Update(window);
+				currentScene->Render(window);
+				currentScene->Delay();
+			}
+			if (window->finish) {
+				currentScene = NULL;
+			}
+			if (!(i % 2 == 1))
+				currentScene = new Game();
+			else
+				currentScene = new HighScoreScene();
+			i++;
+		}
 	}
-	game->Clear();
+	currentScene->Clear(window);
+	currentScene->Close(window);
 	return 0;
 }

@@ -1,21 +1,20 @@
 #pragma once
-#include "WindowManager.h"
-class Menu
+#include "InputManager.h"
+#include "Scene.h"
+class Menu : public Scene
 {
 public:
 	Menu();
 	~Menu();
 
-	void Init();
-	void Update();
-	void HandleEvents();
-	void Render();
-	void Clear();
+	void Init(Window* window) override;
+	void Update(Window* window) override;
+	void HandleEvents(Window* window) override;
+	void Render(Window* window) override;
 
-private:
-	const int FPS = 60;
-	const int frameDelay = 1000 / FPS;
-	Uint32 frameStart;
-	int frameTime;
+protected:
+	int frame;
+	bool pressVisible;
+	SDL_Rect srcTitle, destTitle, srcPress, destPress;
 };
 

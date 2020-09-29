@@ -2,6 +2,7 @@
 #ifndef WINDOWMANAGER_HEADER
 #define WINDOWMANAGER_HEADER
 #include "TextureManager.h"
+#include "ScoreManager.h"
 
 class Window {
 public:
@@ -11,10 +12,11 @@ public:
 	void FrameEvents();
 	
 	SDL_Event event;
-	bool isRunning;
+	bool isRunning, finish;
 	SDL_Renderer* windowRenderer;
 	SDL_Window* window;
 	TextureManager* textureManager;
+	ScoreManager* scoreManager;
 	int leftBorder, rightBorder, topBorder, bottomBorder;
 };	
 #endif 

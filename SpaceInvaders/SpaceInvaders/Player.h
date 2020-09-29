@@ -1,5 +1,6 @@
 #pragma once
 #include "Character.h"
+#include "InputManager.h"
 class Player : public Character
 {
 public:
@@ -17,11 +18,12 @@ public:
 	void HealthBar(Window* window);
 
 	SDL_Rect src, src2, dest;
-	SDL_Rect HPsrc, HPdest;
+	SDL_Rect HPsrc, HPdest, textDest;
 	SDL_Rect bulletSrc;
 	Projectile* bullet;
 
 	bool hit;
+	float missileDist;
 private:
 	int speed = 7;
 	int HP = 3;
