@@ -89,9 +89,6 @@
     <ClInclude Include="TextureManager.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="SceneManager.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="WindowManager.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
@@ -126,6 +123,9 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="FileManager.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\GitSpaceInvaders\SpaceInvaders\SpaceInvaders\SceneManager.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>

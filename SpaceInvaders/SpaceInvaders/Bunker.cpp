@@ -1,7 +1,6 @@
 #include "Bunker.h"
 
 Bunker::Bunker() {
-	HP = 3;
 }
 Bunker::~Bunker(){
 	dest.h = dest.w = 0;

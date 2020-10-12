@@ -38,6 +38,7 @@
     <ClCompile Include="WindowManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\GitSpaceInvaders\SpaceInvaders\SpaceInvaders\SceneManager.h" />
     <ClInclude Include="Bunker.h" />
     <ClInclude Include="BunkerManager.h" />
     <ClInclude Include="Character.h" />
@@ -54,7 +55,6 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="Scene.h" />
-    <ClInclude Include="SceneManager.h" />
     <ClInclude Include="ScoreManager.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="WindowManager.h" />

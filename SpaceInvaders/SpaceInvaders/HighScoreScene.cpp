@@ -61,8 +61,8 @@ void HighScoreScene::Render(Window* window) {
 			line++;
 		}
 		if (pressVisible) {
-			window->textureManager->DrawCharacters("Press     ESCPAPE     to     exit", window->windowRenderer, { 100, 600, 0,0 });
-			window->textureManager->DrawCharacters("Press     F1      to       try     again", window->windowRenderer, { 450, 600,0,0 });
+			window->textureManager->DrawCharacters("Press     ESCPAPE     to     exit", window->windowRenderer, { 500, 600, 0,0 });
+			window->textureManager->DrawCharacters("Press     F1      to       try     again", window->windowRenderer, { 10, 600,0,0 });
 		}
 
 	}
